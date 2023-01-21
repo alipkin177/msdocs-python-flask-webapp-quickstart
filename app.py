@@ -1,4 +1,9 @@
 from datetime import datetime
+import os
+#from requests import get
+#from json import dumps
+import requests
+import json
 from flask import Flask, render_template, request, redirect, url_for, send_from_directory
 app = Flask(__name__)
 
@@ -19,6 +24,12 @@ def hello():
 
    if name:
        print('Request for hello page received with name=%s' % name)
+       IResponse=requests.get("https://itunes.apple.com/search?entity=song&limit=3&term=" + name)
+       outp=IResponse.json()
+       name=name+":"
+       for res in outp["results"]:
+            name=name+res["trackName"]+", "
+       name=name[0:-2]
        return render_template('hello.html', name = name)
    else:
        print('Request for hello page received with no name or blank name -- redirecting')
